@@ -5,14 +5,14 @@ import io.camunda.connector.api.annotation.OutboundConnector;
 import io.camunda.connector.api.annotation.Variable;
 import io.camunda.connector.api.outbound.OutboundConnectorProvider;
 import io.camunda.connector.generator.java.annotation.ElementTemplate;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 
 @OutboundConnector(
         name = "RESERVE_FLIGHT_CONNECTOR",
 //        inputVariables = { "flightId", "seats" },
         type = "net.patrykdobrowolski:reserve-flight:1")
 @ElementTemplate(id = "reserve-flight-connector", name = "Reserve Flight Connector")
-@Slf4j
+@Log
 public class ReserveFlightConnector implements OutboundConnectorProvider {
 
     @Operation(name = "reserveFlight", id = "reserve-flight")

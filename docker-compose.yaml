@@ -28,7 +28,7 @@ services:
     environment:
       - JAVA_TOOL_OPTIONS="-XX:+PrintFlagsFinal"
     env_file:
-      - path: .env
+      - path: .env.8.10
         required: true
     mem_limit: 1g
     restart: on-failure
@@ -62,7 +62,7 @@ services:
       - management.endpoint.health.probes.enabled=true
     env_file:
       - connector-secrets.txt
-      - path: .env
+      - path: .env.8.10
         required: true
     mem_limit: 512m
     restart: on-failure
@@ -75,6 +75,8 @@ services:
     configs:
       - source: connectors-config
         target: application.yaml
+    volumes:
+      - ./camunda-connector/target/camunda-connector.jar:/opt/app/connector.jar:ro
     networks:
       - camunda
     depends_on:

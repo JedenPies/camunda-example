@@ -1,0 +1,33 @@
+{
+  "components": [
+    {
+      "label": "Customer Name",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1j84osq",
+        "columns": null
+      },
+      "id": "Field_00y5755",
+      "key": "customerName"
+    },
+    {
+      "label": "Offer ID",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_1bzspke",
+        "columns": null
+      },
+      "id": "Field_1dssz76",
+      "key": "offerId"
+    }
+  ],
+  "type": "default",
+  "id": "vr_input_form",
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.9.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.48.0"
+  },
+  "schemaVersion": 19
+}
