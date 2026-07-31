@@ -58,10 +58,10 @@
     <bpmn:boundaryEvent id="Event_143ai8b" attachedToRef="Activity_193mbhi">
       <bpmn:outgoing>Flow_11kcwjr</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0s1t52f">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30M</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:sequenceFlow id="Flow_11kcwjr" name="3 days" sourceRef="Event_143ai8b" targetRef="Event_1dm9y9j" />
+    <bpmn:sequenceFlow id="Flow_11kcwjr" name="30 minutes" sourceRef="Event_143ai8b" targetRef="Event_1dm9y9j" />
     <bpmn:sequenceFlow id="Flow_1t9f68j" sourceRef="Event_0jfs6na" targetRef="Event_07ph4sc" />
     <bpmn:subProcess id="Activity_0jz6tje" name="Reserve hotel and flight">
       <bpmn:incoming>Flow_1yil18r</bpmn:incoming>
@@ -73,10 +73,9 @@
         <bpmn:incoming>Flow_1o8w4cg</bpmn:incoming>
         <bpmn:outgoing>Flow_15n6k11</bpmn:outgoing>
       </bpmn:task>
-      <bpmn:boundaryEvent id="Event_19bkmdf" attachedToRef="Activity_074d9sa">
+      <bpmn:boundaryEvent id="Event_19bkmdf" attachedToRef="Activity_0gydguv">
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_1klroq7" />
       </bpmn:boundaryEvent>
-      <bpmn:task id="Activity_1qcs121" name="cancel flight reservation" isForCompensation="true" />
       <bpmn:boundaryEvent id="Event_0opxct3" attachedToRef="Activity_1piwblu">
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_0sp9aim" />
       </bpmn:boundaryEvent>
@@ -87,12 +86,11 @@
         <bpmn:outgoing>Flow_1o8w4cg</bpmn:outgoing>
       </bpmn:parallelGateway>
       <bpmn:parallelGateway id="Gateway_1mmhn8g">
-        <bpmn:incoming>Flow_1b9kpvj</bpmn:incoming>
         <bpmn:incoming>Flow_15n6k11</bpmn:incoming>
+        <bpmn:incoming>Flow_0pdl955</bpmn:incoming>
         <bpmn:outgoing>Flow_0ufkpvb</bpmn:outgoing>
       </bpmn:parallelGateway>
-      <bpmn:sequenceFlow id="Flow_0n2py0a" sourceRef="Gateway_1j58ymi" targetRef="Activity_074d9sa" />
-      <bpmn:sequenceFlow id="Flow_1b9kpvj" sourceRef="Activity_074d9sa" targetRef="Gateway_1mmhn8g" />
+      <bpmn:sequenceFlow id="Flow_0n2py0a" sourceRef="Gateway_1j58ymi" targetRef="Activity_0gydguv" />
       <bpmn:sequenceFlow id="Flow_1o8w4cg" sourceRef="Gateway_1j58ymi" targetRef="Activity_1piwblu" />
       <bpmn:sequenceFlow id="Flow_15n6k11" sourceRef="Activity_1piwblu" targetRef="Gateway_1mmhn8g" />
       <bpmn:sequenceFlow id="Flow_05j47rw" sourceRef="Event_05gyw5q" targetRef="Gateway_1j58ymi" />
@@ -100,23 +98,39 @@
         <bpmn:incoming>Flow_0ufkpvb</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0ufkpvb" sourceRef="Gateway_1mmhn8g" targetRef="Event_1okel64" />
-      <bpmn:serviceTask id="Activity_074d9sa" name="Reserve flight" zeebe:modelerTemplate="reserve-flight-connector" zeebe:modelerTemplateVersion="0">
+      <bpmn:serviceTask id="Activity_0gydguv" name="Reserve Flight" zeebe:modelerTemplate="flight-service-connector" zeebe:modelerTemplateVersion="0">
         <bpmn:extensionElements>
-          <zeebe:taskDefinition type="net.patrykdobrowolski:reserve-flight:1" retries="3" />
+          <zeebe:taskDefinition type="net.patrykdobrowolski:flight-service:1" retries="3" />
           <zeebe:taskHeaders>
             <zeebe:header key="operation" value="reserve-flight" />
             <zeebe:header key="elementTemplateVersion" value="0" />
-            <zeebe:header key="elementTemplateId" value="reserve-flight-connector" />
+            <zeebe:header key="elementTemplateId" value="flight-service-connector" />
             <zeebe:header key="resultVariable" value="flightReservation" />
             <zeebe:header key="retryBackoff" value="PT0S" />
           </zeebe:taskHeaders>
           <zeebe:ioMapping>
             <zeebe:input source="=offer.flightId" target="flightId" />
-            <zeebe:input source="=1" target="seats" />
+            <zeebe:input source="=offer.participantCount" target="seats" />
           </zeebe:ioMapping>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_0n2py0a</bpmn:incoming>
-        <bpmn:outgoing>Flow_1b9kpvj</bpmn:outgoing>
+        <bpmn:outgoing>Flow_0pdl955</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_0pdl955" sourceRef="Activity_0gydguv" targetRef="Gateway_1mmhn8g" />
+      <bpmn:serviceTask id="Activity_1qcs121" name="cancel flight reservation" zeebe:modelerTemplate="flight-service-connector" zeebe:modelerTemplateVersion="0" isForCompensation="true">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="net.patrykdobrowolski:flight-service:1" retries="3" />
+          <zeebe:taskHeaders>
+            <zeebe:header key="operation" value="cancel-reservation" />
+            <zeebe:header key="elementTemplateVersion" value="0" />
+            <zeebe:header key="elementTemplateId" value="flight-service-connector" />
+            <zeebe:header key="resultVariable" value="flightReservation" />
+            <zeebe:header key="retryBackoff" value="PT0S" />
+          </zeebe:taskHeaders>
+          <zeebe:ioMapping>
+            <zeebe:input source="=flightReservation.reservationNumber" target="reservationNumber" />
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
       </bpmn:serviceTask>
       <bpmn:association id="Association_0su04kk" associationDirection="One" sourceRef="Event_19bkmdf" targetRef="Activity_1qcs121" />
       <bpmn:association id="Association_1prctja" associationDirection="One" sourceRef="Event_0opxct3" targetRef="Activity_0k1pd4h" />
@@ -205,10 +219,6 @@
         <dc:Bounds x="790" y="432" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1qcs121_di" bpmnElement="Activity_1qcs121">
-        <dc:Bounds x="790" y="122" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0k1pd4h_di" bpmnElement="Activity_0k1pd4h">
         <dc:Bounds x="790" y="562" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -222,24 +232,23 @@
       <bpmndi:BPMNShape id="Event_1okel64_di" bpmnElement="Event_1okel64">
         <dc:Bounds x="1082" y="354" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0789ik7_di" bpmnElement="Activity_074d9sa">
-        <dc:Bounds x="790" y="262" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0uisas9_di" bpmnElement="Activity_0gydguv">
+        <dc:Bounds x="790" y="250" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uxfl0t_di" bpmnElement="Activity_1qcs121">
+        <dc:Bounds x="790" y="122" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0opxct3_di" bpmnElement="Event_0opxct3">
         <dc:Bounds x="822" y="494" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_19bkmdf_di" bpmnElement="Event_19bkmdf">
-        <dc:Bounds x="822" y="244" width="36" height="36" />
+        <dc:Bounds x="822" y="232" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0n2py0a_di" bpmnElement="Flow_0n2py0a">
         <di:waypoint x="700" y="347" />
-        <di:waypoint x="700" y="302" />
-        <di:waypoint x="790" y="302" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1b9kpvj_di" bpmnElement="Flow_1b9kpvj">
-        <di:waypoint x="890" y="302" />
-        <di:waypoint x="970" y="302" />
-        <di:waypoint x="970" y="347" />
+        <di:waypoint x="700" y="290" />
+        <di:waypoint x="790" y="290" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1o8w4cg_di" bpmnElement="Flow_1o8w4cg">
         <di:waypoint x="700" y="397" />
@@ -259,8 +268,13 @@
         <di:waypoint x="995" y="372" />
         <di:waypoint x="1082" y="372" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pdl955_di" bpmnElement="Flow_0pdl955">
+        <di:waypoint x="890" y="290" />
+        <di:waypoint x="970" y="290" />
+        <di:waypoint x="970" y="347" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_0su04kk_di" bpmnElement="Association_0su04kk">
-        <di:waypoint x="840" y="244" />
+        <di:waypoint x="840" y="232" />
         <di:waypoint x="840" y="202" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_1prctja_di" bpmnElement="Association_1prctja">
@@ -314,7 +328,7 @@
         <di:waypoint x="1280" y="312" />
         <di:waypoint x="1280" y="180" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1293" y="248" width="33" height="14" />
+          <dc:Bounds x="1293" y="263" width="54" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1t9f68j_di" bpmnElement="Flow_1t9f68j">

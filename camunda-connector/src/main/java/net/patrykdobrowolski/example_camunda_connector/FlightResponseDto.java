@@ -4,10 +4,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.UUID;
+
 @Jacksonized
 @Builder @Getter
 public class FlightResponseDto {
 
-    private final String reservationNumber;
-    private final ReservationStatus status;
+    private final UUID reservationNumber;
+    private final FlightReservationStatus status;
 }

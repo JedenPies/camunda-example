@@ -34,7 +34,7 @@
         <configuration>
           <connectors>
             <connector>
-              <connectorClass>net.patrykdobrowolski.example_camunda_connector.ReserveFlightConnector</connectorClass>
+              <connectorClass>net.patrykdobrowolski.example_camunda_connector.FlightServiceConnector</connectorClass>
             </connector>
           </connectors>
         </configuration>

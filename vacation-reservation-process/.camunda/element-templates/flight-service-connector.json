@@ -1,7 +1,7 @@
 {
   "$schema" : "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-  "name" : "Reserve Flight Connector",
-  "id" : "reserve-flight-connector",
+  "name" : "Flight Service Connector",
+  "id" : "flight-service-connector",
   "metadata" : {
     "keywords" : [ ]
   },
@@ -31,7 +31,7 @@
     "label" : "Retries"
   } ],
   "properties" : [ {
-    "value" : "net.patrykdobrowolski:reserve-flight:1",
+    "value" : "net.patrykdobrowolski:flight-service:1",
     "binding" : {
       "property" : "type",
       "type" : "zeebe:taskDefinition"
@@ -49,18 +49,19 @@
     },
     "type" : "Dropdown",
     "choices" : [ {
-      "name" : "cancelReservation",
+      "name" : "Cancel Reservation",
       "value" : "cancel-reservation"
     }, {
-      "name" : "reserveFlight",
+      "name" : "Reserve Flight",
       "value" : "reserve-flight"
     } ]
   }, {
-    "id" : "cancel-reservation:mostSigBits",
-    "label" : "Most sig bits",
+    "id" : "cancel-reservation:reservationNumber",
+    "label" : "Reservation number",
+    "feel" : "optional",
     "group" : "operation",
     "binding" : {
-      "name" : "mostSigBits",
+      "name" : "reservationNumber",
       "type" : "zeebe:input"
     },
     "condition" : {
@@ -70,29 +71,14 @@
         "type" : "simple"
       } ]
     },
-    "type" : "Number"
+    "type" : "String"
   }, {
-    "id" : "cancel-reservation:leastSigBits",
-    "label" : "Least sig bits",
+    "id" : "reserve-flight:flightId",
+    "label" : "Flight id",
+    "feel" : "optional",
     "group" : "operation",
     "binding" : {
-      "name" : "leastSigBits",
-      "type" : "zeebe:input"
-    },
-    "condition" : {
-      "allMatch" : [ {
-        "property" : "operation",
-        "equals" : "cancel-reservation",
-        "type" : "simple"
-      } ]
-    },
-    "type" : "Number"
-  }, {
-    "id" : "reserve-flight:flightId.mostSigBits",
-    "label" : "Most sig bits",
-    "group" : "operation",
-    "binding" : {
-      "name" : "flightId.mostSigBits",
+      "name" : "flightId",
       "type" : "zeebe:input"
     },
     "condition" : {
@@ -102,26 +88,13 @@
         "type" : "simple"
       } ]
     },
-    "type" : "Number"
-  }, {
-    "id" : "reserve-flight:flightId.leastSigBits",
-    "label" : "Least sig bits",
-    "group" : "operation",
-    "binding" : {
-      "name" : "flightId.leastSigBits",
-      "type" : "zeebe:input"
-    },
-    "condition" : {
-      "allMatch" : [ {
-        "property" : "operation",
-        "equals" : "reserve-flight",
-        "type" : "simple"
-      } ]
-    },
-    "type" : "Number"
+    "type" : "String"
   }, {
     "id" : "reserve-flight:seats",
     "label" : "Seats",
+    "description" : "Number of seats to reserve",
+    "optional" : false,
+    "feel" : "optional",
     "group" : "operation",
     "binding" : {
       "name" : "seats",
@@ -134,7 +107,7 @@
         "type" : "simple"
       } ]
     },
-    "type" : "Number"
+    "type" : "String"
   }, {
     "id" : "version",
     "label" : "Version",
@@ -150,7 +123,7 @@
     "id" : "id",
     "label" : "ID",
     "description" : "ID of the element template",
-    "value" : "reserve-flight-connector",
+    "value" : "flight-service-connector",
     "group" : "connector",
     "binding" : {
       "key" : "elementTemplateId",

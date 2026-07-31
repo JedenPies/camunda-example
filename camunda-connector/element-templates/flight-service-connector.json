@@ -1,7 +1,7 @@
 {
   "$schema" : "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-  "name" : "Reserve Flight Connector",
-  "id" : "reserve-flight-connector",
+  "name" : "Flight Service Connector",
+  "id" : "flight-service-connector",
   "metadata" : {
     "keywords" : [ ]
   },
@@ -31,7 +31,7 @@
     "label" : "Retries"
   } ],
   "properties" : [ {
-    "value" : "net.patrykdobrowolski:reserve-flight:1",
+    "value" : "net.patrykdobrowolski:flight-service:1",
     "binding" : {
       "property" : "type",
       "type" : "zeebe:taskDefinition"
@@ -41,13 +41,37 @@
     "id" : "operation",
     "label" : "Operation",
     "description" : "The operation to execute",
-    "value" : "reserve-flight",
+    "value" : "cancel-reservation",
     "group" : "operation",
     "binding" : {
       "key" : "operation",
       "type" : "zeebe:taskHeader"
     },
-    "type" : "Hidden"
+    "type" : "Dropdown",
+    "choices" : [ {
+      "name" : "Cancel Reservation",
+      "value" : "cancel-reservation"
+    }, {
+      "name" : "Reserve Flight",
+      "value" : "reserve-flight"
+    } ]
+  }, {
+    "id" : "cancel-reservation:reservationNumber",
+    "label" : "Reservation number",
+    "feel" : "optional",
+    "group" : "operation",
+    "binding" : {
+      "name" : "reservationNumber",
+      "type" : "zeebe:input"
+    },
+    "condition" : {
+      "allMatch" : [ {
+        "property" : "operation",
+        "equals" : "cancel-reservation",
+        "type" : "simple"
+      } ]
+    },
+    "type" : "String"
   }, {
     "id" : "reserve-flight:flightId",
     "label" : "Flight id",
@@ -68,6 +92,9 @@
   }, {
     "id" : "reserve-flight:seats",
     "label" : "Seats",
+    "description" : "Number of seats to reserve",
+    "optional" : false,
+    "feel" : "optional",
     "group" : "operation",
     "binding" : {
       "name" : "seats",
@@ -80,7 +107,7 @@
         "type" : "simple"
       } ]
     },
-    "type" : "Number"
+    "type" : "String"
   }, {
     "id" : "version",
     "label" : "Version",
@@ -96,7 +123,7 @@
     "id" : "id",
     "label" : "ID",
     "description" : "ID of the element template",
-    "value" : "reserve-flight-connector",
+    "value" : "flight-service-connector",
     "group" : "connector",
     "binding" : {
       "key" : "elementTemplateId",
