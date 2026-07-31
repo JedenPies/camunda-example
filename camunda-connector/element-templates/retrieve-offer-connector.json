@@ -1,0 +1,74 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "Retrieve Offer Data",
+  "id": "retrieve-offer-custom-connector",
+  "description": "Retrieves offer details (dates, rooms, price, number of participants) based on Offer ID.",
+  "category": {
+    "id": "connectors",
+    "name": "Connectors"
+  },
+  "appliesTo": [
+    "bpmn:ServiceTask"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "id": "input",
+      "label": "Offer Input"
+    },
+    {
+      "id": "output",
+      "label": "Output Mapping"
+    }
+  ],
+  "properties": [
+    {
+      "type": "Hidden",
+      "value": "io.camunda:http-json:1",
+      "binding": {
+        "type": "zeebe:taskDefinition:type"
+      }
+    },
+    {
+      "label": "Offer ID",
+      "description": "Enter Offer ID or FEEL expression (e.g. =offerId)",
+      "type": "String",
+      "group": "input",
+      "feel": "optional",
+      "value": "=offerId",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "localOfferId"
+      }
+    },
+    {
+      "type": "Hidden",
+      "value": "GET",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "method"
+      }
+    },
+    {
+      "type": "Hidden",
+      "value": "=\"http://external-services:8080/api/offers/\" + localOfferId",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "url"
+      }
+    },
+    {
+      "label": "Result Expression",
+      "description": "Wyrażenie FEEL do przefiltrowania odpowiedzi",
+      "type": "String",
+      "group": "output",
+      "value": "={\"offer\": response.body}",
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "resultExpression"
+      }
+    }
+  ]
+}

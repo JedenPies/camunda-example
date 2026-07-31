@@ -1,205 +1,325 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0uulsi6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.48.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
-  <bpmn:process id="vacation_reservation" name="Vacation Reservation" isExecutable="true">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1j4wzf6" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.48.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="Process_1999f96" name="Vacation Reservation" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:extensionElements>
         <zeebe:formDefinition formId="vr_input_form" />
         <zeebe:ioMapping>
           <zeebe:output source="=offerId" target="offerId" />
-          <zeebe:output source="=customerName" target="customerName" />
           <zeebe:output source="=uuid()" target="processKey" />
         </zeebe:ioMapping>
       </bpmn:extensionElements>
-      <bpmn:outgoing>Flow_19x2ade</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0emn2qe</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:endEvent id="Event_1ud2ika">
-      <bpmn:incoming>Flow_136cr5j</bpmn:incoming>
+    <bpmn:intermediateThrowEvent id="Event_1dm9y9j">
+      <bpmn:incoming>Flow_07e04nn</bpmn:incoming>
+      <bpmn:incoming>Flow_11kcwjr</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ae9ktf</bpmn:outgoing>
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_15teops" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:task id="Activity_0cmabs3" name="process payment">
+      <bpmn:incoming>Flow_03chfth</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g7rlls</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0g7rlls" sourceRef="Activity_0cmabs3" targetRef="Activity_0sv2r8v" />
+    <bpmn:intermediateThrowEvent id="Event_0jfs6na">
+      <bpmn:incoming>Flow_1xk9ud1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1t9f68j</bpmn:outgoing>
+      <bpmn:compensateEventDefinition id="CompensateEventDefinition_1vpugb6" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:task id="Activity_0sv2r8v" name="confirm reservation using e-mail">
+      <bpmn:incoming>Flow_0g7rlls</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yqb25p</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_03chfth" sourceRef="Activity_193mbhi" targetRef="Activity_0cmabs3" />
+    <bpmn:endEvent id="Event_0dvkqni">
+      <bpmn:incoming>Flow_0yqb25p</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_136cr5j" sourceRef="Activity_1ncvq9m" targetRef="Event_1ud2ika" />
-    <bpmn:sequenceFlow id="Flow_19x2ade" sourceRef="StartEvent_1" targetRef="Activity_1skhlya" />
-    <bpmn:sequenceFlow id="Flow_1uii30m" sourceRef="Activity_17ho8he" targetRef="Event_0kprg3w" />
-    <bpmn:sequenceFlow id="Flow_0ink9ap" sourceRef="Gateway_1s1oabu" targetRef="Activity_1ncvq9m" />
-    <bpmn:sequenceFlow id="Flow_1yugfl1" sourceRef="Event_0kprg3w" targetRef="Gateway_1s1oabu" />
-    <bpmn:sequenceFlow id="Flow_0tspq3v" sourceRef="Activity_1xsx06x" targetRef="Gateway_1s1oabu" />
-    <bpmn:sequenceFlow id="Flow_08nqexk" sourceRef="Gateway_1c59p3q" targetRef="Activity_17ho8he" />
-    <bpmn:sequenceFlow id="Flow_1a3fdff" sourceRef="Gateway_1c59p3q" targetRef="Activity_1xsx06x" />
-    <bpmn:sequenceFlow id="Flow_1gn6x8f" sourceRef="Activity_1skhlya" targetRef="Gateway_1c59p3q" />
-    <bpmn:userTask id="Activity_1ncvq9m">
+    <bpmn:sequenceFlow id="Flow_0yqb25p" sourceRef="Activity_0sv2r8v" targetRef="Event_0dvkqni" />
+    <bpmn:endEvent id="Event_0q447h1">
+      <bpmn:incoming>Flow_1ae9ktf</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_193mbhi" name="collect payment  and contact data">
       <bpmn:extensionElements>
         <zeebe:userTask />
-        <zeebe:formDefinition formId="empty_form" />
-        <zeebe:assignmentDefinition assignee="demo" />
+        <zeebe:formDefinition formId="vr_input_payment_and_contact_data" />
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0ink9ap</bpmn:incoming>
-      <bpmn:outgoing>Flow_136cr5j</bpmn:outgoing>
+      <bpmn:incoming>Flow_149e3f5</bpmn:incoming>
+      <bpmn:outgoing>Flow_03chfth</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="Activity_17ho8he" name="Reserve hotel" zeebe:modelerTemplate="io.camunda.connectors.RabbitMQ.v1" zeebe:modelerTemplateVersion="6" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nLTcuNSAwIDI3MSAyNzEnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yNDUuNDQgMTA4LjMwOGgtODUuMDlhNy43MzggNy43MzggMCAwIDEtNy43MzUtNy43MzR2LTg4LjY4QzE1Mi42MTUgNS4zMjcgMTQ3LjI5IDAgMTQwLjcyNiAwaC0zMC4zNzVjLTYuNTY4IDAtMTEuODkgNS4zMjctMTEuODkgMTEuODk0djg4LjE0M2MwIDQuNTczLTMuNjk3IDguMjktOC4yNyA4LjMxbC0yNy44ODUuMTMzYy00LjYxMi4wMjUtOC4zNTktMy43MTctOC4zNS04LjMyNWwuMTczLTg4LjI0MUM1NC4xNDQgNS4zMzcgNDguODE3IDAgNDIuMjQgMEgxMS44OUM1LjMyMSAwIDAgNS4zMjcgMCAxMS44OTRWMjYwLjIxYzAgNS44MzQgNC43MjYgMTAuNTYgMTAuNTU1IDEwLjU2SDI0NS40NGM1LjgzNCAwIDEwLjU2LTQuNzI2IDEwLjU2LTEwLjU2VjExOC44NjhjMC01LjgzNC00LjcyNi0xMC41Ni0xMC41Ni0xMC41NnptLTM5LjkwMiA5My4yMzNjMCA3LjY0NS02LjE5OCAxMy44NDQtMTMuODQzIDEzLjg0NEgxNjcuNjljLTcuNjQ2IDAtMTMuODQ0LTYuMTk5LTEzLjg0NC0xMy44NDR2LTI0LjAwNWMwLTcuNjQ2IDYuMTk4LTEzLjg0NCAxMy44NDQtMTMuODQ0aDI0LjAwNWM3LjY0NSAwIDEzLjg0MyA2LjE5OCAxMy44NDMgMTMuODQ0djI0LjAwNXonCiAgICAgICAgICBmaWxsPScjRjYwJy8+Cjwvc3ZnPg==">
+    <bpmn:endEvent id="Event_07ph4sc">
+      <bpmn:incoming>Flow_1t9f68j</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Event_09b26u4" attachedToRef="Activity_0cmabs3">
+      <bpmn:outgoing>Flow_1xk9ud1</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0a904af" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1xk9ud1" sourceRef="Event_09b26u4" targetRef="Event_0jfs6na" />
+    <bpmn:boundaryEvent id="Event_143ai8b" attachedToRef="Activity_193mbhi">
+      <bpmn:outgoing>Flow_11kcwjr</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0s1t52f">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT30M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_11kcwjr" name="3 days" sourceRef="Event_143ai8b" targetRef="Event_1dm9y9j" />
+    <bpmn:sequenceFlow id="Flow_1t9f68j" sourceRef="Event_0jfs6na" targetRef="Event_07ph4sc" />
+    <bpmn:subProcess id="Activity_0jz6tje" name="Reserve hotel and flight">
+      <bpmn:incoming>Flow_1yil18r</bpmn:incoming>
+      <bpmn:outgoing>Flow_149e3f5</bpmn:outgoing>
+      <bpmn:startEvent id="Event_05gyw5q">
+        <bpmn:outgoing>Flow_05j47rw</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="Activity_074d9sa" name="Reserve flight">
+        <bpmn:incoming>Flow_0n2py0a</bpmn:incoming>
+        <bpmn:outgoing>Flow_1b9kpvj</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:task id="Activity_1piwblu" name="Reserve hotel">
+        <bpmn:incoming>Flow_1o8w4cg</bpmn:incoming>
+        <bpmn:outgoing>Flow_15n6k11</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:boundaryEvent id="Event_19bkmdf" attachedToRef="Activity_074d9sa">
+        <bpmn:compensateEventDefinition id="CompensateEventDefinition_1klroq7" />
+      </bpmn:boundaryEvent>
+      <bpmn:task id="Activity_1qcs121" name="cancel flight reservation" isForCompensation="true" />
+      <bpmn:boundaryEvent id="Event_0opxct3" attachedToRef="Activity_1piwblu">
+        <bpmn:compensateEventDefinition id="CompensateEventDefinition_0sp9aim" />
+      </bpmn:boundaryEvent>
+      <bpmn:task id="Activity_0k1pd4h" name="cancel hotel reservation" isForCompensation="true" />
+      <bpmn:parallelGateway id="Gateway_1j58ymi">
+        <bpmn:incoming>Flow_05j47rw</bpmn:incoming>
+        <bpmn:outgoing>Flow_0n2py0a</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1o8w4cg</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      <bpmn:parallelGateway id="Gateway_1mmhn8g">
+        <bpmn:incoming>Flow_1b9kpvj</bpmn:incoming>
+        <bpmn:incoming>Flow_15n6k11</bpmn:incoming>
+        <bpmn:outgoing>Flow_0ufkpvb</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      <bpmn:sequenceFlow id="Flow_0n2py0a" sourceRef="Gateway_1j58ymi" targetRef="Activity_074d9sa" />
+      <bpmn:sequenceFlow id="Flow_1b9kpvj" sourceRef="Activity_074d9sa" targetRef="Gateway_1mmhn8g" />
+      <bpmn:sequenceFlow id="Flow_1o8w4cg" sourceRef="Gateway_1j58ymi" targetRef="Activity_1piwblu" />
+      <bpmn:sequenceFlow id="Flow_15n6k11" sourceRef="Activity_1piwblu" targetRef="Gateway_1mmhn8g" />
+      <bpmn:sequenceFlow id="Flow_05j47rw" sourceRef="Event_05gyw5q" targetRef="Gateway_1j58ymi" />
+      <bpmn:endEvent id="Event_1okel64">
+        <bpmn:incoming>Flow_0ufkpvb</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_0ufkpvb" sourceRef="Gateway_1mmhn8g" targetRef="Event_1okel64" />
+      <bpmn:association id="Association_0su04kk" associationDirection="One" sourceRef="Event_19bkmdf" targetRef="Activity_1qcs121" />
+      <bpmn:association id="Association_1prctja" associationDirection="One" sourceRef="Event_0opxct3" targetRef="Activity_0k1pd4h" />
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="Event_1viifac" attachedToRef="Activity_0jz6tje">
+      <bpmn:outgoing>Flow_07e04nn</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_01hk3um" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_07e04nn" sourceRef="Event_1viifac" targetRef="Event_1dm9y9j" />
+    <bpmn:sequenceFlow id="Flow_149e3f5" sourceRef="Activity_0jz6tje" targetRef="Activity_193mbhi" />
+    <bpmn:sequenceFlow id="Flow_1ae9ktf" sourceRef="Event_1dm9y9j" targetRef="Event_0q447h1" />
+    <bpmn:serviceTask id="Activity_0xx422l" name="Retrieve Offer" zeebe:modelerTemplate="retrieve-offer-custom-connector">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="io.camunda:connector-rabbitmq:1" retries="3" />
+        <zeebe:taskDefinition type="io.camunda:http-json:1" />
         <zeebe:ioMapping>
-          <zeebe:input source="credentials" target="authentication.authType" />
-          <zeebe:input source="guest" target="authentication.userName" />
-          <zeebe:input source="guest" target="authentication.password" />
-          <zeebe:input source="hotel_reservation" target="routing.exchange" />
-          <zeebe:input source="=&#34;request.&#34; + hotelId" target="routing.routingKey" />
-          <zeebe:input source="/" target="routing.virtualHost" />
-          <zeebe:input source="rabbitmq" target="routing.hostName" />
-          <zeebe:input source="5672" target="routing.port" />
-          <zeebe:input source="={}" target="message.properties" />
-          <zeebe:input source="={&#10;  &#34;correlationKey&#34;: processKey,&#10;  &#34;hotelId&#34;: hotelId&#10;}" target="message.body" />
+          <zeebe:input source="=offerId" target="localOfferId" />
+          <zeebe:input source="GET" target="method" />
+          <zeebe:input source="=&#34;http://external-services:8080/api/offers/&#34; + localOfferId" target="url" />
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
-          <zeebe:header key="elementTemplateVersion" value="6" />
-          <zeebe:header key="elementTemplateId" value="io.camunda.connectors.RabbitMQ.v1" />
-          <zeebe:header key="resultVariable" />
-          <zeebe:header key="resultExpression" />
-          <zeebe:header key="errorExpression" />
-          <zeebe:header key="retryBackoff" value="PT30S" />
+          <zeebe:header key="resultExpression" value="={&#34;offer&#34;: response.body}" />
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
-      <bpmn:incoming>Flow_08nqexk</bpmn:incoming>
-      <bpmn:outgoing>Flow_1uii30m</bpmn:outgoing>
+      <bpmn:incoming>Flow_0emn2qe</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yil18r</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:intermediateCatchEvent id="Event_0kprg3w" name="Receive reservation result" zeebe:modelerTemplate="io.camunda.connectors.inbound.RabbitMQ.Intermediate.v1" zeebe:modelerTemplateVersion="8" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nLTcuNSAwIDI3MSAyNzEnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yNDUuNDQgMTA4LjMwOGgtODUuMDlhNy43MzggNy43MzggMCAwIDEtNy43MzUtNy43MzR2LTg4LjY4QzE1Mi42MTUgNS4zMjcgMTQ3LjI5IDAgMTQwLjcyNiAwaC0zMC4zNzVjLTYuNTY4IDAtMTEuODkgNS4zMjctMTEuODkgMTEuODk0djg4LjE0M2MwIDQuNTczLTMuNjk3IDguMjktOC4yNyA4LjMxbC0yNy44ODUuMTMzYy00LjYxMi4wMjUtOC4zNTktMy43MTctOC4zNS04LjMyNWwuMTczLTg4LjI0MUM1NC4xNDQgNS4zMzcgNDguODE3IDAgNDIuMjQgMEgxMS44OUM1LjMyMSAwIDAgNS4zMjcgMCAxMS44OTRWMjYwLjIxYzAgNS44MzQgNC43MjYgMTAuNTYgMTAuNTU1IDEwLjU2SDI0NS40NGM1LjgzNCAwIDEwLjU2LTQuNzI2IDEwLjU2LTEwLjU2VjExOC44NjhjMC01LjgzNC00LjcyNi0xMC41Ni0xMC41Ni0xMC41NnptLTM5LjkwMiA5My4yMzNjMCA3LjY0NS02LjE5OCAxMy44NDQtMTMuODQzIDEzLjg0NEgxNjcuNjljLTcuNjQ2IDAtMTMuODQ0LTYuMTk5LTEzLjg0NC0xMy44NDR2LTI0LjAwNWMwLTcuNjQ2IDYuMTk4LTEzLjg0NCAxMy44NDQtMTMuODQ0aDI0LjAwNWM3LjY0NSAwIDEzLjg0MyA2LjE5OCAxMy44NDMgMTMuODQ0djI0LjAwNXonCiAgICAgICAgICBmaWxsPScjRjYwJy8+Cjwvc3ZnPg==">
-      <bpmn:extensionElements>
-        <zeebe:properties>
-          <zeebe:property name="inbound.type" value="io.camunda:connector-rabbitmq-inbound:1" />
-          <zeebe:property name="authentication.authType" value="credentials" />
-          <zeebe:property name="authentication.userName" value="guest" />
-          <zeebe:property name="authentication.password" value="guest" />
-          <zeebe:property name="routing.virtualHost" value="/" />
-          <zeebe:property name="routing.hostName" value="rabbitmq" />
-          <zeebe:property name="routing.port" value="5672" />
-          <zeebe:property name="queueName" value="hotel_reservation_response" />
-          <zeebe:property name="consumerTag" value="" />
-          <zeebe:property name="exclusive" value="false" />
-          <zeebe:property name="consumeUnmatchedEvents" value="true" />
-          <zeebe:property name="correlationKeyExpression" value="=message.body.correlationKey" />
-          <zeebe:property name="deduplicationModeManualFlag" value="false" />
-          <zeebe:property name="deduplicationMode" value="AUTO" />
-          <zeebe:property name="resultVariable" value="rabbitResult" />
-          <zeebe:property name="resultExpression" value="=response.body.correlationKey" />
-        </zeebe:properties>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1uii30m</bpmn:incoming>
-      <bpmn:outgoing>Flow_1yugfl1</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1l41yu1" messageRef="Message_1w6g6jv" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:parallelGateway id="Gateway_1s1oabu">
-      <bpmn:incoming>Flow_0tspq3v</bpmn:incoming>
-      <bpmn:incoming>Flow_1yugfl1</bpmn:incoming>
-      <bpmn:outgoing>Flow_0ink9ap</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:serviceTask id="Activity_1xsx06x" name="Reserve Flight" zeebe:modelerTemplate="reserve-flight-connector" zeebe:modelerTemplateVersion="0">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="net.patrykdobrowolski:reserve-flight:1" retries="3" />
-        <zeebe:taskHeaders>
-          <zeebe:header key="operation" value="reserve-flight" />
-          <zeebe:header key="elementTemplateVersion" value="0" />
-          <zeebe:header key="elementTemplateId" value="reserve-flight-connector" />
-          <zeebe:header key="resultVariable" value="flightReservationResult" />
-          <zeebe:header key="resultExpression" value="=body" />
-          <zeebe:header key="errorExpression" />
-          <zeebe:header key="retryBackoff" value="PT0S" />
-        </zeebe:taskHeaders>
-        <zeebe:ioMapping>
-          <zeebe:input source="=flightId" target="flightId" />
-          <zeebe:input source="=3" target="seats" />
-        </zeebe:ioMapping>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_1a3fdff</bpmn:incoming>
-      <bpmn:outgoing>Flow_0tspq3v</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:parallelGateway id="Gateway_1c59p3q">
-      <bpmn:incoming>Flow_1gn6x8f</bpmn:incoming>
-      <bpmn:outgoing>Flow_1a3fdff</bpmn:outgoing>
-      <bpmn:outgoing>Flow_08nqexk</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:serviceTask id="Activity_1skhlya" name="Map offer to hotel and flight">
-      <bpmn:extensionElements>
-        <zeebe:taskDefinition type="map_offer_to_hotel_and_flight" />
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_19x2ade</bpmn:incoming>
-      <bpmn:outgoing>Flow_1gn6x8f</bpmn:outgoing>
-    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0emn2qe" sourceRef="StartEvent_1" targetRef="Activity_0xx422l" />
+    <bpmn:sequenceFlow id="Flow_1yil18r" sourceRef="Activity_0xx422l" targetRef="Activity_0jz6tje" />
+    <bpmn:textAnnotation id="TextAnnotation_0qi08v8">
+      <bpmn:text>input: offerId</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1v7er1y" associationDirection="None" sourceRef="StartEvent_1" targetRef="TextAnnotation_0qi08v8" />
+    <bpmn:textAnnotation id="TextAnnotation_10t3s6o">
+      <bpmn:text>map offerId to flightId, hotelRoomId, participantCount, etc.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0n7iili" associationDirection="None" sourceRef="Activity_0xx422l" targetRef="TextAnnotation_10t3s6o" />
   </bpmn:process>
-  <bpmn:message id="Message_1w6g6jv" name="ReservationResponseReceived" zeebe:modelerTemplate="io.camunda.connectors.inbound.RabbitMQ.Intermediate.v1">
-    <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="=processKey" />
-    </bpmn:extensionElements>
-  </bpmn:message>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="vacation_reservation">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1999f96">
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="152" y="192" width="36" height="36" />
+        <dc:Bounds x="192" y="352" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ud2ika_di" bpmnElement="Event_1ud2ika">
-        <dc:Bounds x="1332" y="192" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_1dm9y9j_di" bpmnElement="Event_1dm9y9j">
+        <dc:Bounds x="1262" y="144" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1skhlya_di" bpmnElement="Activity_1skhlya">
-        <dc:Bounds x="300" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0cmabs3_di" bpmnElement="Activity_0cmabs3">
+        <dc:Bounds x="1430" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ncvq9m_di" bpmnElement="Activity_1ncvq9m">
-        <dc:Bounds x="1160" y="170" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_0jfs6na_di" bpmnElement="Event_0jfs6na">
+        <dc:Bounds x="1462" y="472" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1c59p3q_di" bpmnElement="Gateway_1c59p3q">
-        <dc:Bounds x="585" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1s1oabu_di" bpmnElement="Gateway_1s1oabu">
-        <dc:Bounds x="925" y="185" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1xsx06x_di" bpmnElement="Activity_1xsx06x">
-        <dc:Bounds x="720" y="80" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_0sv2r8v_di" bpmnElement="Activity_0sv2r8v">
+        <dc:Bounds x="1620" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_17ho8he_di" bpmnElement="Activity_17ho8he">
-        <dc:Bounds x="560" y="310" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_0dvkqni_di" bpmnElement="Event_0dvkqni">
+        <dc:Bounds x="1812" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0q447h1_di" bpmnElement="Event_0q447h1">
+        <dc:Bounds x="1812" y="144" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08gx954_di" bpmnElement="Activity_193mbhi">
+        <dc:Bounds x="1230" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_07ph4sc_di" bpmnElement="Event_07ph4sc">
+        <dc:Bounds x="1812" y="472" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jz6tje_di" bpmnElement="Activity_0jz6tje" isExpanded="true">
+        <dc:Bounds x="510" y="80" width="660" height="602" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0kprg3w_di" bpmnElement="Event_0kprg3w">
-        <dc:Bounds x="932" y="332" width="36" height="36" />
+      <bpmndi:BPMNShape id="Event_05gyw5q_di" bpmnElement="Event_05gyw5q">
+        <dc:Bounds x="550" y="354" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_074d9sa_di" bpmnElement="Activity_074d9sa">
+        <dc:Bounds x="790" y="262" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1piwblu_di" bpmnElement="Activity_1piwblu">
+        <dc:Bounds x="790" y="432" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qcs121_di" bpmnElement="Activity_1qcs121">
+        <dc:Bounds x="790" y="122" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0k1pd4h_di" bpmnElement="Activity_0k1pd4h">
+        <dc:Bounds x="790" y="562" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1j58ymi_di" bpmnElement="Gateway_1j58ymi">
+        <dc:Bounds x="675" y="347" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1mmhn8g_di" bpmnElement="Gateway_1mmhn8g">
+        <dc:Bounds x="945" y="347" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1okel64_di" bpmnElement="Event_1okel64">
+        <dc:Bounds x="1082" y="354" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0opxct3_di" bpmnElement="Event_0opxct3">
+        <dc:Bounds x="822" y="494" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19bkmdf_di" bpmnElement="Event_19bkmdf">
+        <dc:Bounds x="822" y="244" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0n2py0a_di" bpmnElement="Flow_0n2py0a">
+        <di:waypoint x="700" y="347" />
+        <di:waypoint x="700" y="302" />
+        <di:waypoint x="790" y="302" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b9kpvj_di" bpmnElement="Flow_1b9kpvj">
+        <di:waypoint x="890" y="302" />
+        <di:waypoint x="970" y="302" />
+        <di:waypoint x="970" y="347" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o8w4cg_di" bpmnElement="Flow_1o8w4cg">
+        <di:waypoint x="700" y="397" />
+        <di:waypoint x="700" y="472" />
+        <di:waypoint x="790" y="472" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15n6k11_di" bpmnElement="Flow_15n6k11">
+        <di:waypoint x="890" y="472" />
+        <di:waypoint x="970" y="472" />
+        <di:waypoint x="970" y="397" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05j47rw_di" bpmnElement="Flow_05j47rw">
+        <di:waypoint x="586" y="372" />
+        <di:waypoint x="675" y="372" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ufkpvb_di" bpmnElement="Flow_0ufkpvb">
+        <di:waypoint x="995" y="372" />
+        <di:waypoint x="1082" y="372" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0su04kk_di" bpmnElement="Association_0su04kk">
+        <di:waypoint x="840" y="244" />
+        <di:waypoint x="840" y="202" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1prctja_di" bpmnElement="Association_1prctja">
+        <di:waypoint x="840" y="530" />
+        <di:waypoint x="840" y="562" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0xx422l_di" bpmnElement="Activity_0xx422l">
+        <dc:Bounds x="301" y="330" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0qi08v8_di" bpmnElement="TextAnnotation_0qi08v8">
+        <dc:Bounds x="159" y="200" width="102" height="40" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_10t3s6o_di" bpmnElement="TextAnnotation_10t3s6o">
+        <dc:Bounds x="299" y="177" width="104" height="86" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1viifac_di" bpmnElement="Event_1viifac">
+        <dc:Bounds x="1152" y="144" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_143ai8b_di" bpmnElement="Event_143ai8b">
+        <dc:Bounds x="1262" y="312" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_09b26u4_di" bpmnElement="Event_09b26u4">
+        <dc:Bounds x="1462" y="392" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0g7rlls_di" bpmnElement="Flow_0g7rlls">
+        <di:waypoint x="1530" y="370" />
+        <di:waypoint x="1620" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03chfth_di" bpmnElement="Flow_03chfth">
+        <di:waypoint x="1330" y="370" />
+        <di:waypoint x="1430" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yqb25p_di" bpmnElement="Flow_0yqb25p">
+        <di:waypoint x="1720" y="370" />
+        <di:waypoint x="1812" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xk9ud1_di" bpmnElement="Flow_1xk9ud1">
+        <di:waypoint x="1480" y="428" />
+        <di:waypoint x="1480" y="472" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11kcwjr_di" bpmnElement="Flow_11kcwjr">
+        <di:waypoint x="1280" y="312" />
+        <di:waypoint x="1280" y="180" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="908" y="375" width="85" height="27" />
+          <dc:Bounds x="1293" y="248" width="33" height="14" />
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_19x2ade_di" bpmnElement="Flow_19x2ade">
-        <di:waypoint x="188" y="210" />
-        <di:waypoint x="300" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_136cr5j_di" bpmnElement="Flow_136cr5j">
-        <di:waypoint x="1260" y="210" />
-        <di:waypoint x="1332" y="210" />
+      <bpmndi:BPMNEdge id="Flow_1t9f68j_di" bpmnElement="Flow_1t9f68j">
+        <di:waypoint x="1498" y="490" />
+        <di:waypoint x="1812" y="490" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1gn6x8f_di" bpmnElement="Flow_1gn6x8f">
-        <di:waypoint x="400" y="210" />
-        <di:waypoint x="585" y="210" />
+      <bpmndi:BPMNEdge id="Flow_07e04nn_di" bpmnElement="Flow_07e04nn">
+        <di:waypoint x="1188" y="162" />
+        <di:waypoint x="1262" y="162" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0ink9ap_di" bpmnElement="Flow_0ink9ap">
-        <di:waypoint x="975" y="210" />
-        <di:waypoint x="1160" y="210" />
+      <bpmndi:BPMNEdge id="Flow_149e3f5_di" bpmnElement="Flow_149e3f5">
+        <di:waypoint x="1170" y="370" />
+        <di:waypoint x="1230" y="370" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1a3fdff_di" bpmnElement="Flow_1a3fdff">
-        <di:waypoint x="610" y="185" />
-        <di:waypoint x="610" y="120" />
-        <di:waypoint x="720" y="120" />
+      <bpmndi:BPMNEdge id="Flow_1ae9ktf_di" bpmnElement="Flow_1ae9ktf">
+        <di:waypoint x="1298" y="162" />
+        <di:waypoint x="1812" y="162" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08nqexk_di" bpmnElement="Flow_08nqexk">
-        <di:waypoint x="610" y="235" />
-        <di:waypoint x="610" y="310" />
+      <bpmndi:BPMNEdge id="Flow_0emn2qe_di" bpmnElement="Flow_0emn2qe">
+        <di:waypoint x="228" y="370" />
+        <di:waypoint x="301" y="370" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0tspq3v_di" bpmnElement="Flow_0tspq3v">
-        <di:waypoint x="820" y="120" />
-        <di:waypoint x="950" y="120" />
-        <di:waypoint x="950" y="185" />
+      <bpmndi:BPMNEdge id="Flow_1yil18r_di" bpmnElement="Flow_1yil18r">
+        <di:waypoint x="401" y="370" />
+        <di:waypoint x="510" y="370" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yugfl1_di" bpmnElement="Flow_1yugfl1">
-        <di:waypoint x="950" y="332" />
-        <di:waypoint x="950" y="235" />
+      <bpmndi:BPMNEdge id="Association_1v7er1y_di" bpmnElement="Association_1v7er1y">
+        <di:waypoint x="210" y="352" />
+        <di:waypoint x="209" y="240" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1uii30m_di" bpmnElement="Flow_1uii30m">
-        <di:waypoint x="660" y="350" />
-        <di:waypoint x="932" y="350" />
+      <bpmndi:BPMNEdge id="Association_0n7iili_di" bpmnElement="Association_0n7iili">
+        <di:waypoint x="351" y="330" />
+        <di:waypoint x="349" y="263" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
