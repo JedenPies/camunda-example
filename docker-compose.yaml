@@ -91,7 +91,7 @@ services:
     image: external-services
     container_name: external-services
     ports:
-      - "8090:8090"
+      - "8090:8080"
     environment:
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672

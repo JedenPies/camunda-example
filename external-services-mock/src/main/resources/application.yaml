@@ -22,5 +22,5 @@ spring:
           initial-interval: 1000ms
           max-retries: 3
 server:
-  port: 8090
+  port: 8080
 
