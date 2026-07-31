@@ -84,28 +84,54 @@ services:
         # Wait for orchestration service to be healthy, otherwise we get a lot of noisy logs from connection errors
         condition: service_healthy
 
-  # MockServer for mocking external REST endpoints
-  mock-server:
-    image: mockserver/mockserver:latest
-    container_name: mock-server
+  external-services:
+    build:
+      context: external-services-mock
+      dockerfile: Dockerfile
+    image: external-services
+    container_name: external-services
     ports:
-      - "1080:1080"
+      - "8090:8090"
     environment:
-      - MOCKSERVER_SERVER_PORT=1080
-    restart: unless-stopped
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=external-services
+      - RABBITMQ_PASSWORD=external-services
+      - DB_HOST=external-services-postgres
+      - DB_PORT=5432
+      - DB_DATABASE=external-services
+      - DB_USERNAME=external-services
+      - DB_PASSWORD=external-services
+    networks:
+      - camunda
+    depends_on:
+      - rabbitmq
+
+  external-services-postgres:
+    image: postgres:17-alpine
+    container_name: external-services-postgres
+    environment:
+      POSTGRES_USER: external-services
+      POSTGRES_PASSWORD: external-services
+      POSTGRES_DB: external-services
+    ports:
+      - "5433:5432"
+    volumes:
+      - external-services-data:/var/lib/postgresql/data
     networks:
       - camunda
 
-  # RabbitMQ for asynchronous communication (Saga compensation / events)
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
       - "5672:5672"
       - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: external-services
+      RABBITMQ_DEFAULT_PASS: external-services
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
@@ -119,6 +145,8 @@ services:
 volumes:
   camunda:
   camunda-data:
+  external-services-data:
+  rabbitmq-data:
 
 networks:
   camunda:
