@@ -98,7 +98,7 @@
         <bpmn:incoming>Flow_0ufkpvb</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0ufkpvb" sourceRef="Gateway_1mmhn8g" targetRef="Event_1okel64" />
-      <bpmn:serviceTask id="Activity_0gydguv" name="Reserve Flight" zeebe:modelerTemplate="flight-service-connector" zeebe:modelerTemplateVersion="0">
+      <bpmn:serviceTask id="Activity_0gydguv" name="Reserve Flight" zeebe:modelerTemplate="flight-service-connector" zeebe:modelerTemplateVersion="0" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjNTU1NTU1Ij4KICAgIDxwYXRoIGQ9Ik0yMSAxNnYtMmwtOC01VjMuNWMwLS44My0uNjctMS41LTEuNS0xLjVTMTAgMi42NyAxMCAzLjVWOWwtOCA1djJsOC0yLjVWMTlsLTIgMS41VjIybDMuNS0xIDMuNSAxdi0xLjVMMTMgMTl2LTUuNWw4IDIuNXoiLz4KPC9zdmc+Cg==">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="net.patrykdobrowolski:flight-service:1" retries="3" />
           <zeebe:taskHeaders>
@@ -117,7 +117,7 @@
         <bpmn:outgoing>Flow_0pdl955</bpmn:outgoing>
       </bpmn:serviceTask>
       <bpmn:sequenceFlow id="Flow_0pdl955" sourceRef="Activity_0gydguv" targetRef="Gateway_1mmhn8g" />
-      <bpmn:serviceTask id="Activity_1qcs121" name="cancel flight reservation" zeebe:modelerTemplate="flight-service-connector" zeebe:modelerTemplateVersion="0" isForCompensation="true">
+      <bpmn:serviceTask id="Activity_1qcs121" name="Cancel Flight Reservation" zeebe:modelerTemplate="flight-service-connector" zeebe:modelerTemplateVersion="0" zeebe:modelerTemplateIcon="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiBmaWxsPSIjNTU1NTU1Ij4KICAgIDxwYXRoIGQ9Ik0yMSAxNnYtMmwtOC01VjMuNWMwLS44My0uNjctMS41LTEuNS0xLjVTMTAgMi42NyAxMCAzLjVWOWwtOCA1djJsOC0yLjVWMTlsLTIgMS41VjIybDMuNS0xIDMuNSAxdi0xLjVMMTMgMTl2LTUuNWw4IDIuNXoiLz4KPC9zdmc+Cg==" isForCompensation="true">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="net.patrykdobrowolski:flight-service:1" retries="3" />
           <zeebe:taskHeaders>
@@ -238,6 +238,7 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0uxfl0t_di" bpmnElement="Activity_1qcs121">
         <dc:Bounds x="790" y="122" width="100" height="80" />
+        <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0opxct3_di" bpmnElement="Event_0opxct3">
         <dc:Bounds x="822" y="494" width="36" height="36" />

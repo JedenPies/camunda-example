@@ -18,7 +18,9 @@ import java.util.UUID;
 @OutboundConnector(
         name = "FLIGHT_SERVICE_CONNECTOR",
         type = "net.patrykdobrowolski:flight-service:1")
-@ElementTemplate(id = "flight-service-connector", name = "Flight Service Connector")
+@ElementTemplate(
+        id = "flight-service-connector", name = "Flight Service Connector", description = "Allows to manage flight reservations",
+        icon = "flight-service-connector.svg")
 @Log
 public class FlightServiceConnector implements OutboundConnectorProvider {
 
