@@ -61,13 +61,24 @@
     },
     {
       "label": "Result Expression",
-      "description": "Wyrażenie FEEL do przefiltrowania odpowiedzi",
+      "description": "FEEL expression to filter the response",
       "type": "String",
       "group": "output",
       "value": "={\"offer\": response.body}",
       "binding": {
         "type": "zeebe:taskHeader",
         "key": "resultExpression"
+      }
+    },
+    {
+      "label": "Error Expression",
+      "description": "Maps 404 to BPMN Error (np. =if error.code = \"404\" then bpmnError(\"OFFER_NOT_FOUND\", \"No offer\") else null)",
+      "type": "Hidden",
+      "group": "output",
+      "value": "=if error.code = \"404\" then bpmnError(\"OFFER_NOT_FOUND\", \"No offer\") else null",
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "errorExpression"
       }
     }
   ]
