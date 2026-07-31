@@ -33,7 +33,7 @@ public class Offer {
     private List<@NotNull UUID> hotelRoomsIds;
 
     @NotNull
-    private Integer peopleCount;
+    private Integer participantCount;
 
     @NotNull
     private BigDecimal price;
