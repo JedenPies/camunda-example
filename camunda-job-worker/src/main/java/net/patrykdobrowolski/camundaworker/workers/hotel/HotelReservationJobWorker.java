@@ -37,4 +37,13 @@ public class HotelReservationJobWorker {
         }
         return Map.of("hotelReservation", result);
     }
+
+    @JobWorker(type = "confirm-hotel-reservation")
+    public Map<String, Object> confirmReservation(@Variable(name = "hotelReservation") HotelReservation hotelReservation) {
+        HotelReservation result = hotelReservationService.confirmReservation(hotelReservation.getId());
+        if (result.getStatus() != HotelReservationStatus.CONFIRMED) {
+            throw new BpmnError("RESERVATION_CONFIRMATION_FAILED", "");
+        }
+        return Map.of("hotelReservation", result);
+    }
 }

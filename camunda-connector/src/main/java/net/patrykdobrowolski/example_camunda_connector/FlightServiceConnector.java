@@ -54,6 +54,27 @@ public class FlightServiceConnector implements OutboundConnectorProvider {
         throw new ConnectorException("FLIGHT_RESERVATION_FAILED", "making reservation failed");
     }
 
+    @Operation(name = "Confirm Reservation", id = "confirm-reservation")
+    public FlightResponseDto confirmReservation(@Variable(name = "reservationNumber") String reservationNumber) throws Exception {
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://external-services:8080/api/flights/reservations/" + reservationNumber + "/confirmation"))
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(""))
+                .build();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() == 200) {
+            ExternalFlightReservation responseObject = objectMapper.readValue(response.body(), ExternalFlightReservation.class);
+            if (responseObject.getStatus() == ExternalFlightReservationStatus.CONFIRMED) {
+                return FlightResponseDto.builder()
+                        .reservationNumber(responseObject.getId())
+                        .status(FlightReservationStatus.CONFIRMED)
+                        .build();
+            }
+        }
+        throw new ConnectorException("FLIGHT_CONFIRMATION_FAILED", "reservation confirmation failed");
+    }
+
     @Operation(name = "Cancel Reservation", id = "cancel-reservation")
     public FlightResponseDto cancelReservation(@Variable(name = "reservationNumber") String reservationNumber) throws Exception {
 

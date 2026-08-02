@@ -53,6 +53,9 @@
       "name" : "Cancel Reservation",
       "value" : "cancel-reservation"
     }, {
+      "name" : "Confirm Reservation",
+      "value" : "confirm-reservation"
+    }, {
       "name" : "Reserve Flight",
       "value" : "reserve-flight"
     } ]
@@ -69,6 +72,23 @@
       "allMatch" : [ {
         "property" : "operation",
         "equals" : "cancel-reservation",
+        "type" : "simple"
+      } ]
+    },
+    "type" : "String"
+  }, {
+    "id" : "confirm-reservation:reservationNumber",
+    "label" : "Reservation number",
+    "feel" : "optional",
+    "group" : "operation",
+    "binding" : {
+      "name" : "reservationNumber",
+      "type" : "zeebe:input"
+    },
+    "condition" : {
+      "allMatch" : [ {
+        "property" : "operation",
+        "equals" : "confirm-reservation",
         "type" : "simple"
       } ]
     },
