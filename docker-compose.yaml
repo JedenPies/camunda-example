@@ -84,6 +84,26 @@ services:
         # Wait for orchestration service to be healthy, otherwise we get a lot of noisy logs from connection errors
         condition: service_healthy
 
+  job-workers:
+    build:
+      context: camunda-job-worker
+      dockerfile: Dockerfile
+    image: camunda-job-workers
+    container_name: job-workers
+    environment:
+      - ORCHESTRATION_HOST=http://orchestration
+      - ORCHESTRATION_GRPC_PORT=26500
+      - ORCHESTRATION_REST_PORT=8080
+      - EXTERNAL_SERVICES_HOST_PORT=http://external-services:8080
+      - SERVER_PORT=8090
+    networks:
+      - camunda
+    depends_on:
+      orchestration:
+        condition: service_healthy
+      external-services:
+        condition: service_started
+
   external-services:
     build:
       context: external-services-mock

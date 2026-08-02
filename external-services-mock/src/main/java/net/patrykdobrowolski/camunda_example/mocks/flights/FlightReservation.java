@@ -1,8 +1,6 @@
 package net.patrykdobrowolski.camunda_example.mocks.flights;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -24,5 +22,6 @@ public class FlightReservation {
     @NotNull @Min(1) @Max(10)
     private Integer seats;
 
+    @Enumerated(EnumType.STRING)
     private FlightReservationStatus status;
 }

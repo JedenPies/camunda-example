@@ -18,5 +18,5 @@ tasks.register<Exec>("buildJobWorker") {
 
 tasks.register<Exec>("dockerComposeUp") {
     dependsOn("buildConnector", "buildJobWorker", "copyElementTemplates")
-    commandLine("docker-compose", "up", "-d", "--build", "--force-recreate")
+    commandLine("docker-compose", "up", "-d", "--build")
 }

@@ -1,12 +1,15 @@
 server:
-  port: 8090
+  port: ${SERVER_PORT:8091}
 camunda:
   client:
     mode: self-managed
     auth:
       method: none
-#    grpc-address: 'http://localhost:26500'
-    rest-address: 'http://localhost:8080'
+    grpc-address: "${ORCHESTRATION_HOST:http://localhost}:${ORCHESTRATION_GRPC_PORT:26500}"
+    rest-address: "${ORCHESTRATION_HOST:http://localhost}:${ORCHESTRATION_REST_PORT:8080}"
     enabled: true
-    prefer-rest-over-grpc: true
-
+spring:
+  cloud:
+    openfeign:
+      lazy-attributes-resolution: true
+external_service_host_port: "${EXTERNAL_SERVICES_HOST_PORT:http://localhost:8090}"

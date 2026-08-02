@@ -12,7 +12,6 @@
         </encoder>
     </appender>
 
-    <!-- Włączamy pełne logowanie Camundy i gRPC, żeby zobaczyć próbę połączenia -->
     <logger name="io.camunda" level="DEBUG"/>
     <logger name="io.grpc" level="DEBUG"/>
 

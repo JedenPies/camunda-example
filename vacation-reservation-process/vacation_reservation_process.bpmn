@@ -58,7 +58,7 @@
     <bpmn:boundaryEvent id="Event_143ai8b" attachedToRef="Activity_193mbhi">
       <bpmn:outgoing>Flow_11kcwjr</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0s1t52f">
-        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT15S</bpmn:timeDuration>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_11kcwjr" name="30 minutes" sourceRef="Event_143ai8b" targetRef="Event_1dm9y9j" />
@@ -69,17 +69,12 @@
       <bpmn:startEvent id="Event_05gyw5q">
         <bpmn:outgoing>Flow_05j47rw</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:task id="Activity_1piwblu" name="Reserve hotel">
-        <bpmn:incoming>Flow_1o8w4cg</bpmn:incoming>
-        <bpmn:outgoing>Flow_15n6k11</bpmn:outgoing>
-      </bpmn:task>
       <bpmn:boundaryEvent id="Event_19bkmdf" attachedToRef="Activity_0gydguv">
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_1klroq7" />
       </bpmn:boundaryEvent>
       <bpmn:boundaryEvent id="Event_0opxct3" attachedToRef="Activity_1piwblu">
         <bpmn:compensateEventDefinition id="CompensateEventDefinition_0sp9aim" />
       </bpmn:boundaryEvent>
-      <bpmn:task id="Activity_0k1pd4h" name="cancel hotel reservation" isForCompensation="true" />
       <bpmn:parallelGateway id="Gateway_1j58ymi">
         <bpmn:incoming>Flow_05j47rw</bpmn:incoming>
         <bpmn:outgoing>Flow_0n2py0a</bpmn:outgoing>
@@ -130,6 +125,18 @@
           <zeebe:ioMapping>
             <zeebe:input source="=flightReservation.reservationNumber" target="reservationNumber" />
           </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_1piwblu" name="Reserve hotel">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="reserve-hotel" />
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1o8w4cg</bpmn:incoming>
+        <bpmn:outgoing>Flow_15n6k11</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Activity_0k1pd4h" name="cancel hotel reservation" isForCompensation="true">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="cancel-hotel-reservation" />
         </bpmn:extensionElements>
       </bpmn:serviceTask>
       <bpmn:association id="Association_0su04kk" associationDirection="One" sourceRef="Event_19bkmdf" targetRef="Activity_1qcs121" />
@@ -215,14 +222,6 @@
       <bpmndi:BPMNShape id="Event_05gyw5q_di" bpmnElement="Event_05gyw5q">
         <dc:Bounds x="550" y="354" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1piwblu_di" bpmnElement="Activity_1piwblu">
-        <dc:Bounds x="790" y="432" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0k1pd4h_di" bpmnElement="Activity_0k1pd4h">
-        <dc:Bounds x="790" y="562" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1j58ymi_di" bpmnElement="Gateway_1j58ymi">
         <dc:Bounds x="675" y="347" width="50" height="50" />
       </bpmndi:BPMNShape>
@@ -239,6 +238,12 @@
       <bpmndi:BPMNShape id="Activity_0uxfl0t_di" bpmnElement="Activity_1qcs121">
         <dc:Bounds x="790" y="122" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0280zso_di" bpmnElement="Activity_1piwblu">
+        <dc:Bounds x="790" y="432" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ag1scp_di" bpmnElement="Activity_0k1pd4h">
+        <dc:Bounds x="790" y="562" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0opxct3_di" bpmnElement="Event_0opxct3">
         <dc:Bounds x="822" y="494" width="36" height="36" />
