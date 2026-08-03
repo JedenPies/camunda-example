@@ -34,7 +34,13 @@
         <configuration>
           <connectors>
             <connector>
-              <connectorClass>net.patrykdobrowolski.example_camunda_connector.FlightServiceConnector</connectorClass>
+              <connectorClass>net.patrykdobrowolski.camunda_connector.flight.FlightServiceConnector</connectorClass>
+            </connector>
+            <connector>
+              <connectorClass>net.patrykdobrowolski.camunda_connector.payment.PaymentServiceOutboundConnector</connectorClass>
+            </connector>
+            <connector>
+              <connectorClass>net.patrykdobrowolski.camunda_connector.payment.PaymentServiceInboundConnector</connectorClass>
             </connector>
           </connectors>
         </configuration>
@@ -49,6 +55,12 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>org.slf4j</pattern>
+                  <shadedPattern>shadow.org.slf4j</shadedPattern>
+                </relocation>
+              </relocations>
               <transformers>
                 <transformer />
               </transformers>
@@ -65,12 +77,6 @@
     </repository>
   </repositories>
   <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>2.0.18</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>

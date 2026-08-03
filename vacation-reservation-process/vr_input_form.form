@@ -8,7 +8,7 @@
         "columns": null
       },
       "id": "Field_00y5755",
-      "key": "customerName",
+      "key": "f_customerName",
       "validate": {
         "minLength": "3",
         "required": true
@@ -22,7 +22,7 @@
         "columns": null
       },
       "id": "Field_1dssz76",
-      "key": "offerId",
+      "key": "f_offerId",
       "validate": {
         "required": true,
         "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"

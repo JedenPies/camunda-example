@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.example_camunda_connector;
+package net.patrykdobrowolski.camunda_connector.flight;
 
 import io.camunda.connector.generator.java.annotation.FeelMode;
 import io.camunda.connector.generator.java.annotation.TemplateProperty;

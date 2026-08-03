@@ -1,0 +1,57 @@
+package net.patrykdobrowolski.camunda_connector.payment;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import io.camunda.connector.api.annotation.Operation;
+import io.camunda.connector.api.annotation.OutboundConnector;
+import io.camunda.connector.api.annotation.Variable;
+import io.camunda.connector.api.outbound.OutboundConnectorProvider;
+import io.camunda.connector.generator.java.annotation.ElementTemplate;
+import lombok.extern.java.Log;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.concurrent.TimeoutException;
+
+@OutboundConnector(
+        name = "PAYMENT_SERVICE_OUTBOUND_CONNECTOR",
+        type = "net.patrykdobrowolski:payment-service-outbound-connector:1")
+@ElementTemplate(
+        id = "payment-service-outbound-connector", name = "Payment Service Outbound Connector", description = "A connector for payment service",
+        icon = "payment-service-connector.svg")
+@Log
+public class PaymentServiceOutboundConnector implements OutboundConnectorProvider {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    @Operation(name = "Request Payment", id = "request-payment")
+    public String requestPayment(@Variable ProcessPaymentInput input) throws IOException, TimeoutException {
+
+        RabbitConfiguration rabbitConfiguration = RabbitConfiguration.getInstance();
+        UUID correlationKey = UUID.randomUUID();
+        log.info("Requesting payment for: " + input);
+
+        Connection connection = RabbitConnectionManager.getConnection();
+        try (Channel channel = connection.createChannel()) {
+            log.info("connected to rabbitmq");
+            PaymentRequestCommand paymentRequestCommand = PaymentRequestCommand.builder()
+                    .paymentMethod(input.getPaymentMethod())
+                    .paymentMethodDetails(input.getPaymentMethodDetails())
+                    .amount(input.getAmount())
+                    .correlationKey(correlationKey)
+                    .build();
+            String jsonPayload = OBJECT_MAPPER.writeValueAsString(paymentRequestCommand);
+            channel.basicPublish(
+                    rabbitConfiguration.getExchange(),
+                    "request." + correlationKey,
+                    null,
+                    jsonPayload.getBytes(StandardCharsets.UTF_8)
+            );
+            log.info("Payment request sent");
+        }
+        return correlationKey.toString();
+    }
+}

@@ -1,1 +1,2 @@
-net.patrykdobrowolski.example_camunda_connector.FlightServiceConnector
+net.patrykdobrowolski.camunda_connector.flight.FlightServiceConnector
+net.patrykdobrowolski.camunda_connector.payment.PaymentServiceOutboundConnector

@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.example_camunda_connector;
+package net.patrykdobrowolski.camunda_connector.flight;
 
 public enum FlightReservationStatus {
 

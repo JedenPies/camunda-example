@@ -22,10 +22,11 @@
         "columns": null
       },
       "id": "Field_1sv6lee",
-      "key": "select_z57vwp",
+      "key": "f_paymentMethod",
       "validate": {
         "required": true
-      }
+      },
+      "defaultValue": "CREDIT_CARD"
     },
     {
       "label": "Payment Details",
@@ -35,7 +36,7 @@
         "columns": null
       },
       "id": "Field_0a2oxez",
-      "key": "textfield_eohcyc",
+      "key": "f_paymentMethodDetails",
       "validate": {
         "minLength": "1",
         "required": true
@@ -49,7 +50,7 @@
         "columns": null
       },
       "id": "Field_1jze18z",
-      "key": "textfield_4a0jq",
+      "key": "f_emailAddress",
       "validate": {
         "validationType": "email",
         "required": true

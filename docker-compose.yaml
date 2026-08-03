@@ -60,6 +60,13 @@ services:
     environment:
       - management.endpoints.web.exposure.include=health,configprops
       - management.endpoint.health.probes.enabled=true
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_USERNAME=external-services
+      - RABBITMQ_PASSWORD=external-services
+      - RABBITMQ_VIRTUAL_HOST=/
+      - RABBITMQ_EXCHANGE=payments
+      - RABBITMQ_RESULT_QUEUE=payment-results
     env_file:
       - connector-secrets.txt
       - path: .env.8.10
