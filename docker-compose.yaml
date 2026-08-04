@@ -67,6 +67,7 @@ services:
       - RABBITMQ_VIRTUAL_HOST=/
       - RABBITMQ_EXCHANGE=payments
       - RABBITMQ_RESULT_QUEUE=payment-results
+      - FLIGHT_SERVICE_URL=http://external-services:8080/api/flights
     env_file:
       - connector-secrets.txt
       - path: .env.8.10

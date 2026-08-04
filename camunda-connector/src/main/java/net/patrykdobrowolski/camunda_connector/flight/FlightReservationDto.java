@@ -8,10 +8,10 @@ import java.util.UUID;
 
 @Jacksonized @Builder
 @Getter
-public class ExternalFlightReservation {
+public class FlightReservationDto {
 
     private UUID id;
     private UUID flightId;
     private Integer seats;
-    private ExternalFlightReservationStatus status;
+    private FlightReservationStatus status;
 }

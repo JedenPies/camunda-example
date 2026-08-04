@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.camunda_connector.payment;
+package net.patrykdobrowolski.camunda_connector.payment.in;
 
 import lombok.Builder;
 import lombok.Getter;

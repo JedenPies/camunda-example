@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.camunda_connector.payment;
+package net.patrykdobrowolski.camunda_connector.config;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -20,19 +20,23 @@ public class RabbitConnectionManager {
     public static Connection getConnection() throws IOException, TimeoutException {
         if (connection == null || !connection.isOpen()) {
             synchronized (LOCK) {
-                if (connection == null || !connection.isOpen()) {
-                    RabbitConfiguration rabbitConfiguration = RabbitConfiguration.getInstance();
-                    ConnectionFactory factory = new ConnectionFactory();
-                    factory.setHost(rabbitConfiguration.getHost());
-                    factory.setPort(rabbitConfiguration.getPort());
-                    factory.setUsername(rabbitConfiguration.getUsername());
-                    factory.setPassword(rabbitConfiguration.getPassword());
-                    factory.setVirtualHost(rabbitConfiguration.getVirtualHost());
-                    connection = factory.newConnection();
-                }
+                openConnectionIfNotOpen();
             }
         }
         return connection;
+    }
+
+    private static void openConnectionIfNotOpen() throws IOException, TimeoutException {
+        if (connection == null || !connection.isOpen()) {
+            RabbitConfiguration rabbitConfiguration = RabbitConfiguration.getInstance();
+            ConnectionFactory factory = new ConnectionFactory();
+            factory.setHost(rabbitConfiguration.getHost());
+            factory.setPort(rabbitConfiguration.getPort());
+            factory.setUsername(rabbitConfiguration.getUsername());
+            factory.setPassword(rabbitConfiguration.getPassword());
+            factory.setVirtualHost(rabbitConfiguration.getVirtualHost());
+            connection = factory.newConnection();
+        }
     }
 
     private static void closeConnection() {

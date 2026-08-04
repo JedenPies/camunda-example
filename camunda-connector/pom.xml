@@ -54,10 +54,10 @@
                             <connectorClass>net.patrykdobrowolski.camunda_connector.flight.FlightServiceConnector</connectorClass>
                         </connector>
                         <connector>
-                            <connectorClass>net.patrykdobrowolski.camunda_connector.payment.PaymentServiceOutboundConnector</connectorClass>
+                            <connectorClass>net.patrykdobrowolski.camunda_connector.payment.out.PaymentServiceOutboundConnector</connectorClass>
                         </connector>
                         <connector>
-                            <connectorClass>net.patrykdobrowolski.camunda_connector.payment.PaymentServiceInboundConnector</connectorClass>
+                            <connectorClass>net.patrykdobrowolski.camunda_connector.payment.in.PaymentServiceInboundConnector</connectorClass>
                         </connector>
                     </connectors>
                 </configuration>

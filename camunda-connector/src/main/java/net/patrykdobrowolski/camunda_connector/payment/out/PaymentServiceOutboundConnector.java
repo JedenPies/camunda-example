@@ -1,15 +1,17 @@
-package net.patrykdobrowolski.camunda_connector.payment;
+package net.patrykdobrowolski.camunda_connector.payment.out;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import io.camunda.connector.api.annotation.Operation;
 import io.camunda.connector.api.annotation.OutboundConnector;
 import io.camunda.connector.api.annotation.Variable;
 import io.camunda.connector.api.outbound.OutboundConnectorProvider;
 import io.camunda.connector.generator.java.annotation.ElementTemplate;
 import lombok.extern.java.Log;
+import net.patrykdobrowolski.camunda_connector.config.ObjectMapperConfiguration;
+import net.patrykdobrowolski.camunda_connector.config.RabbitConfiguration;
+import net.patrykdobrowolski.camunda_connector.config.RabbitConnectionManager;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -25,15 +27,14 @@ import java.util.concurrent.TimeoutException;
 @Log
 public class PaymentServiceOutboundConnector implements OutboundConnectorProvider {
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = ObjectMapperConfiguration.getObjectMapper();
+    private static final RabbitConfiguration RABBIT_CONFIGURATION = RabbitConfiguration.getInstance();
 
     @Operation(name = "Request Payment", id = "request-payment")
     public String requestPayment(@Variable ProcessPaymentInput input) throws IOException, TimeoutException {
 
-        RabbitConfiguration rabbitConfiguration = RabbitConfiguration.getInstance();
         UUID correlationKey = UUID.randomUUID();
         log.info("Requesting payment for: " + input);
-
         Connection connection = RabbitConnectionManager.getConnection();
         try (Channel channel = connection.createChannel()) {
             log.info("connected to rabbitmq");
@@ -45,7 +46,7 @@ public class PaymentServiceOutboundConnector implements OutboundConnectorProvide
                     .build();
             String jsonPayload = OBJECT_MAPPER.writeValueAsString(paymentRequestCommand);
             channel.basicPublish(
-                    rabbitConfiguration.getExchange(),
+                    RABBIT_CONFIGURATION.getExchange(),
                     "request." + correlationKey,
                     null,
                     jsonPayload.getBytes(StandardCharsets.UTF_8)

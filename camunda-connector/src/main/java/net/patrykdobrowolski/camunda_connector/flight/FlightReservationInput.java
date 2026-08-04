@@ -9,7 +9,7 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @Builder
 @Getter
-public class FlightRequestDto {
+public class FlightReservationInput {
 
     private final String flightId;
 

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Jacksonized
 @Builder @Getter
-public class FlightResponseDto {
+public class FlighReservationOutput {
 
     private final UUID reservationNumber;
     private final FlightReservationStatus status;

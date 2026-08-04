@@ -1,5 +1,6 @@
 package net.patrykdobrowolski.camunda_connector.flight;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.camunda.connector.api.annotation.Operation;
 import io.camunda.connector.api.annotation.OutboundConnector;
@@ -8,6 +9,8 @@ import io.camunda.connector.api.error.ConnectorException;
 import io.camunda.connector.api.outbound.OutboundConnectorProvider;
 import io.camunda.connector.generator.java.annotation.ElementTemplate;
 import lombok.extern.java.Log;
+import net.patrykdobrowolski.camunda_connector.config.ExternalServicesConfiguration;
+import net.patrykdobrowolski.camunda_connector.config.ObjectMapperConfiguration;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,28 +27,50 @@ import java.util.UUID;
 @Log
 public class FlightServiceConnector implements OutboundConnectorProvider {
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final HttpClient httpClient = HttpClient.newHttpClient();
+    private static final ObjectMapper objectMapper = ObjectMapperConfiguration.getObjectMapper();
 
     @Operation(name = "Reserve Flight", id = "reserve-flight")
-    public FlightResponseDto reserveFlight(@Variable FlightRequestDto flightRequest) throws Exception {
+    public FlighReservationOutput reserveFlight(@Variable FlightReservationInput input) throws Exception {
+        HttpRequest request = prepareReservationRequest(input);
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return handleReservationResponse(response);
+    }
 
-        ExternalFlightReservation requestObject = ExternalFlightReservation.builder()
-                .flightId(UUID.fromString(flightRequest.getFlightId()))
-                .seats(flightRequest.getSeats())
+    @Operation(name = "Confirm Reservation", id = "confirm-reservation")
+    public FlighReservationOutput confirmReservation(@Variable(name = "reservationNumber") String reservationNumber) throws Exception {
+        HttpRequest request = prepareConfirmationRequest(reservationNumber);
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return handleConfirmationResponse(response);
+    }
+
+    @Operation(name = "Cancel Reservation", id = "cancel-reservation")
+    public FlighReservationOutput cancelReservation(@Variable(name = "reservationNumber") String reservationNumber) throws Exception {
+        UUID reservationNumberUUID = UUID.fromString(reservationNumber);
+        HttpRequest request = prepareCancellationRequest(reservationNumber);
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return handleCancellationResponse(response, reservationNumberUUID);
+    }
+
+    private static HttpRequest prepareReservationRequest(FlightReservationInput input) throws JsonProcessingException {
+
+        FlightReservationDto requestObject = FlightReservationDto.builder()
+                .flightId(UUID.fromString(input.getFlightId()))
+                .seats(input.getSeats())
                 .build();
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://external-services:8080/api/flights/reservations"))
+        return HttpRequest.newBuilder()
+                .uri(URI.create(ExternalServicesConfiguration.getInstance().getFlightServiceUrl() + "/reservations"))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(requestObject)))
                 .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private static FlighReservationOutput handleReservationResponse(HttpResponse<String> response) throws JsonProcessingException {
 
         if (response.statusCode() == 200) {
-            ExternalFlightReservation responseObject = objectMapper.readValue(response.body(), ExternalFlightReservation.class);
-            if (responseObject.getStatus() == ExternalFlightReservationStatus.PENDING) {
-                return FlightResponseDto.builder()
+            FlightReservationDto responseObject = objectMapper.readValue(response.body(), FlightReservationDto.class);
+            if (responseObject.getStatus() == FlightReservationStatus.PENDING) {
+                return FlighReservationOutput.builder()
                         .reservationNumber(responseObject.getId())
                         .status(FlightReservationStatus.PENDING)
                         .build();
@@ -54,19 +79,21 @@ public class FlightServiceConnector implements OutboundConnectorProvider {
         throw new ConnectorException("FLIGHT_RESERVATION_FAILED", "making reservation failed");
     }
 
-    @Operation(name = "Confirm Reservation", id = "confirm-reservation")
-    public FlightResponseDto confirmReservation(@Variable(name = "reservationNumber") String reservationNumber) throws Exception {
+    private static HttpRequest prepareConfirmationRequest(String reservationNumber) {
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://external-services:8080/api/flights/reservations/" + reservationNumber + "/confirmation"))
+        return HttpRequest.newBuilder()
+                .uri(URI.create(ExternalServicesConfiguration.getInstance().getFlightServiceUrl() + "/reservations/" + reservationNumber + "/confirmation"))
                 .header("Content-Type", "application/json")
                 .PUT(HttpRequest.BodyPublishers.ofString(""))
                 .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    private static FlighReservationOutput handleConfirmationResponse(HttpResponse<String> response) throws JsonProcessingException {
+
         if (response.statusCode() == 200) {
-            ExternalFlightReservation responseObject = objectMapper.readValue(response.body(), ExternalFlightReservation.class);
-            if (responseObject.getStatus() == ExternalFlightReservationStatus.CONFIRMED) {
-                return FlightResponseDto.builder()
+            FlightReservationDto responseObject = objectMapper.readValue(response.body(), FlightReservationDto.class);
+            if (responseObject.getStatus() == FlightReservationStatus.CONFIRMED) {
+                return FlighReservationOutput.builder()
                         .reservationNumber(responseObject.getId())
                         .status(FlightReservationStatus.CONFIRMED)
                         .build();
@@ -75,21 +102,20 @@ public class FlightServiceConnector implements OutboundConnectorProvider {
         throw new ConnectorException("FLIGHT_CONFIRMATION_FAILED", "reservation confirmation failed");
     }
 
-    @Operation(name = "Cancel Reservation", id = "cancel-reservation")
-    public FlightResponseDto cancelReservation(@Variable(name = "reservationNumber") String reservationNumber) throws Exception {
 
-        UUID reservationNumberUUID = UUID.fromString(reservationNumber);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://external-services:8080/api/flights/reservations/" + reservationNumber))
+    private static HttpRequest prepareCancellationRequest(String reservationNumber) {
+        return HttpRequest.newBuilder()
+                .uri(URI.create(ExternalServicesConfiguration.getInstance().getFlightServiceUrl() + "/reservations/" + reservationNumber))
                 .header("Content-Type", "application/json")
                 .DELETE()
                 .build();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+    }
 
+    private static FlighReservationOutput handleCancellationResponse(HttpResponse<String> response, UUID reservationNumberUUID) throws JsonProcessingException {
         if (response.statusCode() == 200) {
-            ExternalFlightReservation responseObject = objectMapper.readValue(response.body(), ExternalFlightReservation.class);
-            if (responseObject.getStatus() == ExternalFlightReservationStatus.CANCELLED) {
-                return FlightResponseDto.builder()
+            FlightReservationDto responseObject = objectMapper.readValue(response.body(), FlightReservationDto.class);
+            if (responseObject.getStatus() == FlightReservationStatus.CANCELLED) {
+                return FlighReservationOutput.builder()
                         .reservationNumber(reservationNumberUUID)
                         .status(FlightReservationStatus.CANCELLED)
                         .build();

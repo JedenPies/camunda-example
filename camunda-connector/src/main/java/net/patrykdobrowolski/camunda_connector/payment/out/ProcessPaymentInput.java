@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.camunda_connector.payment;
+package net.patrykdobrowolski.camunda_connector.payment.out;
 
 import io.camunda.connector.generator.java.annotation.FeelMode;
 import io.camunda.connector.generator.java.annotation.TemplateProperty;
@@ -14,10 +14,6 @@ import java.math.BigDecimal;
 @ToString
 public class ProcessPaymentInput {
 
-    @TemplateProperty(
-            type = TemplateProperty.PropertyType.String,
-            feel = FeelMode.optional,
-            description = "Payment method")
     private final PaymentMethod paymentMethod;
     private final String paymentMethodDetails;
     @TemplateProperty(

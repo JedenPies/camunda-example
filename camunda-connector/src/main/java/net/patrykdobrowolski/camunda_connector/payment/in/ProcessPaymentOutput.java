@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.camunda_connector.payment;
+package net.patrykdobrowolski.camunda_connector.payment.in;
 
 import io.camunda.connector.generator.java.annotation.FeelMode;
 import io.camunda.connector.generator.java.annotation.TemplateProperty;
@@ -17,9 +17,5 @@ public class ProcessPaymentOutput {
             feel = FeelMode.optional,
             description = "Correlation key")
     private UUID correlationKey;
-//    @TemplateProperty(
-//            type = TemplateProperty.PropertyType.String,
-//            feel = FeelMode.optional,
-//            description = "Payment status")
     private PaymentStatus paymentStatus;
 }

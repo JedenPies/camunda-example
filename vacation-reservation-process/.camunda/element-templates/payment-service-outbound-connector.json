@@ -52,9 +52,6 @@
   }, {
     "id" : "request-payment:paymentMethod",
     "label" : "Payment method",
-    "description" : "Payment method",
-    "optional" : false,
-    "feel" : "optional",
     "group" : "operation",
     "binding" : {
       "name" : "paymentMethod",
@@ -67,7 +64,17 @@
         "type" : "simple"
       } ]
     },
-    "type" : "String"
+    "type" : "Dropdown",
+    "choices" : [ {
+      "name" : "CREDIT_CARD",
+      "value" : "CREDIT_CARD"
+    }, {
+      "name" : "PAYPAL",
+      "value" : "PAYPAL"
+    }, {
+      "name" : "BLIK",
+      "value" : "BLIK"
+    } ]
   }, {
     "id" : "request-payment:paymentMethodDetails",
     "label" : "Payment method details",
