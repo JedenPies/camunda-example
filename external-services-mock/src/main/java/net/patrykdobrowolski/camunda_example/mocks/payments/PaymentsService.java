@@ -12,7 +12,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentsService {
 
-    public static final String MAGIC_CC_NUMBER = "666";
+    public static final String MAGIC_FAIL_NUMBER = "666";
 
     private final PaymentsRepository paymentsRepository;
     private final RabbitTemplate rabbitTemplate;
@@ -32,7 +32,7 @@ public class PaymentsService {
                 .details(command.getPaymentMethodDetails())
                 .amount(command.getAmount())
                 .build();
-        if (MAGIC_CC_NUMBER.equals(command.getPaymentMethodDetails()) && command.getPaymentMethod() == PaymentMethod.CREDIT_CARD) {
+        if (command.getPaymentMethodDetails().endsWith(MAGIC_FAIL_NUMBER)) {
             payment.setResult(PaymentResult.FAILED);
         } else {
             payment.setResult(PaymentResult.SUCCEED);

@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -19,7 +19,7 @@ public class PaymentsCommandsListener {
 
     @RabbitListener(queues = "payment-requests")
     public void onPaymentEvent(@Valid PaymentRequestCommand event) {
-        int delayInSeconds = ThreadLocalRandom.current().nextInt(10, 180);
+        int delayInSeconds = event.getAmount().remainder(BigDecimal.ONE).movePointRight(2).abs().intValue();
         CompletableFuture.runAsync(() -> paymentsService.prepareAndSendResponse(event), CompletableFuture.delayedExecutor(delayInSeconds, TimeUnit.SECONDS)).exceptionally(throwable -> {
             log.error("Error occurred while processing payment request: {}", throwable.getMessage());
             // TODO to be handled in the future
