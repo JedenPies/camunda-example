@@ -12,38 +12,57 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentsService {
 
-    public static final String MAGIC_FAIL_NUMBER = "666";
-
     private final PaymentsRepository paymentsRepository;
     private final RabbitTemplate rabbitTemplate;
 
     @Transactional
-    public void prepareAndSendResponse(PaymentRequestCommand command) {
-        Payment payment = preparePayment(command);
-        paymentsRepository.save(payment);
-        PaymentResultEvent resultEvent = prepareResultEvent(payment).withCorrelationKey(command.getCorrelationKey());
-        rabbitTemplate.convertAndSend("payments", "result." + command.getCorrelationKey(), resultEvent, (CorrelationData) null); // TODO take care of rabbit/db synchronization
+    public void beginPayment(PaymentRequestCommand command) {
+        Payment newPayment = prepareNewPayment(command);
+        paymentsRepository.save(newPayment);
     }
 
-    private Payment preparePayment(PaymentRequestCommand command) {
-        Payment payment = Payment.builder()
-                .id(UUID.randomUUID())
+    @Transactional
+    public void confirmPaymentSucceed(UUID correlationKey) {
+        Payment found = paymentsRepository.findById(correlationKey).orElseThrow();
+        found.confirmSuccess();
+        paymentsRepository.save(found);
+        PaymentResultEvent event = prepareResultEvent(found);
+        rabbitTemplate.convertAndSend("payments", "result." + found.getId(), event);
+    }
+
+    @Transactional
+    public void confirmPaymentFailed(UUID correlationKey) {
+        Payment found = paymentsRepository.findById(correlationKey).orElseThrow();
+        found.makeFailed();
+        paymentsRepository.save(found);
+        PaymentResultEvent event = prepareResultEvent(found);
+        rabbitTemplate.convertAndSend("payments", "result." + found.getId(), event);
+    }
+
+    @Transactional
+    public void cancelPayment(UUID correlationKey) {
+        Payment found = paymentsRepository.findById(correlationKey).orElseThrow();
+        found.cancel();
+        paymentsRepository.save(found);
+        PaymentResultEvent event = prepareResultEvent(found);
+        rabbitTemplate.convertAndSend("payments", "result." + found.getId(), event, (CorrelationData) null); // TODO take care of rabbit/db synchronization
+    }
+
+    private Payment prepareNewPayment(PaymentRequestCommand command) {
+        return Payment.builder()
+                .id(command.getCorrelationKey())
                 .method(command.getPaymentMethod())
                 .details(command.getPaymentMethodDetails())
                 .amount(command.getAmount())
+                .status(PaymentStatus.PENDING)
                 .build();
-        if (command.getPaymentMethodDetails().endsWith(MAGIC_FAIL_NUMBER)) {
-            payment.setResult(PaymentResult.FAILED);
-        } else {
-            payment.setResult(PaymentResult.SUCCEED);
-        }
-        return payment;
     }
 
     private PaymentResultEvent prepareResultEvent(Payment payment) {
         return PaymentResultEvent.builder()
+                .correlationKey(payment.getId())
                 .paymentId(payment.getId())
-                .paymentResult(payment.getResult())
+                .paymentResult(PaymentResult.from(payment.getStatus()))
                 .build();
     }
 }

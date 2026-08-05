@@ -18,12 +18,21 @@ public class PaymentsCommandsListener {
     private final PaymentsService paymentsService;
 
     @RabbitListener(queues = "payment-requests")
-    public void onPaymentEvent(@Valid PaymentRequestCommand event) {
+    public void onPaymentRequestEvent(@Valid PaymentRequestCommand event) {
+        paymentsService.beginPayment(event);
         int delayInSeconds = event.getAmount().remainder(BigDecimal.ONE).movePointRight(2).abs().intValue();
-        CompletableFuture.runAsync(() -> paymentsService.prepareAndSendResponse(event), CompletableFuture.delayedExecutor(delayInSeconds, TimeUnit.SECONDS)).exceptionally(throwable -> {
+        CompletableFuture.runAsync(() -> this.handleEvent(event), CompletableFuture.delayedExecutor(delayInSeconds, TimeUnit.SECONDS)).exceptionally(throwable -> {
             log.error("Error occurred while processing payment request: {}", throwable.getMessage());
             // TODO to be handled in the future
             return null;
         });
+    }
+
+    private void handleEvent(PaymentRequestCommand event) {
+        if (event.getPaymentMethodDetails().endsWith("666")) {
+            paymentsService.confirmPaymentFailed(event.getCorrelationKey());
+        } else {
+            paymentsService.confirmPaymentSucceed(event.getCorrelationKey());
+        }
     }
 }

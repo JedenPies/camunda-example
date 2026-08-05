@@ -1,13 +1,15 @@
 package net.patrykdobrowolski.camunda_example.mocks.payments;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.With;
+import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
 
-@Data
-@Builder
+@Jacksonized
+@Builder @Getter @RequiredArgsConstructor
 public class PaymentResultEvent {
 
     @With
