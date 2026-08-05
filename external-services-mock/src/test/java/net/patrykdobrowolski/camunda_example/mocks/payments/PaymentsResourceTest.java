@@ -117,7 +117,7 @@ public class PaymentsResourceTest {
                 .amount(BigDecimal.valueOf(100.10))
                 .build();
         postNewPayment(request).andExpect(status().isOk()).andReturn();
-        cancelPayment(paymentId).andExpect(status().isNoContent()).andReturn();
+        cancelPayment(paymentId).andExpect(status().isOk()).andReturn();
         PaymentResultEvent result = expectRabbitTemplateCall(paymentId, 15);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getPaymentId()).isEqualTo(paymentId);

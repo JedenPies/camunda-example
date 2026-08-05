@@ -42,13 +42,37 @@
     "id" : "operation",
     "label" : "Operation",
     "description" : "The operation to execute",
-    "value" : "request-payment",
+    "value" : "cancel-payment",
     "group" : "operation",
     "binding" : {
       "key" : "operation",
       "type" : "zeebe:taskHeader"
     },
-    "type" : "Hidden"
+    "type" : "Dropdown",
+    "choices" : [ {
+      "name" : "Cancel Payment",
+      "value" : "cancel-payment"
+    }, {
+      "name" : "Request Payment",
+      "value" : "request-payment"
+    } ]
+  }, {
+    "id" : "cancel-payment:correlationKey",
+    "label" : "Correlation key",
+    "feel" : "optional",
+    "group" : "operation",
+    "binding" : {
+      "name" : "correlationKey",
+      "type" : "zeebe:input"
+    },
+    "condition" : {
+      "allMatch" : [ {
+        "property" : "operation",
+        "equals" : "cancel-payment",
+        "type" : "simple"
+      } ]
+    },
+    "type" : "String"
   }, {
     "id" : "request-payment:paymentMethod",
     "label" : "Payment method",

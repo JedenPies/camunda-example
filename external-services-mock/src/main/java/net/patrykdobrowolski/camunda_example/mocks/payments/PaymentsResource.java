@@ -1,7 +1,6 @@
 package net.patrykdobrowolski.camunda_example.mocks.payments;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -20,8 +19,7 @@ public class PaymentsResource {
     }
 
     @DeleteMapping("/{paymentId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void cancelPayment(@PathVariable UUID paymentId) {
-        paymentsService.cancelPayment(paymentId);
+    public Payment cancelPayment(@PathVariable UUID paymentId) {
+        return paymentsService.cancelPayment(paymentId);
     }
 }

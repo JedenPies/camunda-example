@@ -1,5 +1,6 @@
 package net.patrykdobrowolski.camunda_example.mocks.payments;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +23,7 @@ public class Payment {
     @Builder.Default
     @Getter
     private PaymentStatus status = PaymentStatus.PENDING;
-    @Version
+    @Version @JsonIgnore
     private Long version;
 
     public void confirmSuccess() {

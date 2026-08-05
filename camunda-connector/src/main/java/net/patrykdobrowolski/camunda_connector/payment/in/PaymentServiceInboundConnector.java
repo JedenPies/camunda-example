@@ -12,6 +12,8 @@ import lombok.extern.java.Log;
 import net.patrykdobrowolski.camunda_connector.config.ObjectMapperConfiguration;
 import net.patrykdobrowolski.camunda_connector.config.RabbitConfiguration;
 import net.patrykdobrowolski.camunda_connector.config.RabbitConnectionManager;
+import net.patrykdobrowolski.camunda_connector.payment.dto.PaymentResultEvent;
+import net.patrykdobrowolski.camunda_connector.payment.dto.ProcessPaymentOutput;
 
 import java.nio.charset.StandardCharsets;
 

@@ -1,4 +1,4 @@
-package net.patrykdobrowolski.camunda_connector.payment.out;
+package net.patrykdobrowolski.camunda_connector.payment.dto;
 
 import lombok.Builder;
 import lombok.Getter;

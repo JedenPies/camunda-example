@@ -1,7 +1,7 @@
 FROM gradle:9-jdk-25-and-26-alpine AS build
 WORKDIR /app
 
-COPY build.gradle settings.gradle /app/
+COPY build.gradle settings.gradle lombok.config /app/
 COPY src /app/src
 
 RUN gradle build --no-daemon
