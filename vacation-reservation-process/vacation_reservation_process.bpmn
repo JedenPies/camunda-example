@@ -26,10 +26,6 @@
       <bpmn:outgoing>Flow_1t9f68j</bpmn:outgoing>
       <bpmn:compensateEventDefinition id="CompensateEventDefinition_1vpugb6" />
     </bpmn:intermediateThrowEvent>
-    <bpmn:task id="Activity_0sv2r8v" name="confirm reservation using e-mail">
-      <bpmn:incoming>Flow_08dppy7</bpmn:incoming>
-      <bpmn:outgoing>Flow_0yqb25p</bpmn:outgoing>
-    </bpmn:task>
     <bpmn:endEvent id="Event_0dvkqni">
       <bpmn:incoming>Flow_0yqb25p</bpmn:incoming>
       <bpmn:incoming>Flow_1ae9ktf</bpmn:incoming>
@@ -168,7 +164,6 @@
       <bpmn:outgoing>Flow_0qzs0lb</bpmn:outgoing>
       <bpmn:errorEventDefinition id="ErrorEventDefinition_02t63tr" />
     </bpmn:boundaryEvent>
-    <bpmn:endEvent id="Event_0fhrwum" />
     <bpmn:sequenceFlow id="Flow_0qzs0lb" sourceRef="Event_0ye2exl" targetRef="Event_0dvkqni" />
     <bpmn:subProcess id="Activity_0bgmds6" name="Confirm hotel and flight reservation">
       <bpmn:incoming>Flow_127skco</bpmn:incoming>
@@ -345,6 +340,10 @@
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0h0i0kw" name="90 seconds" sourceRef="Event_05ir7v2" targetRef="Event_0jfs6na" />
+    <bpmn:task id="Activity_0sv2r8v" name="confirm reservation using e-mail">
+      <bpmn:incoming>Flow_08dppy7</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yqb25p</bpmn:outgoing>
+    </bpmn:task>
     <bpmn:textAnnotation id="TextAnnotation_0qi08v8">
       <bpmn:text>input: offerId</bpmn:text>
     </bpmn:textAnnotation>
@@ -367,10 +366,6 @@
       <bpmndi:BPMNShape id="Event_1dm9y9j_di" bpmnElement="Event_1dm9y9j">
         <dc:Bounds x="1832" y="112" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0sv2r8v_di" bpmnElement="Activity_0sv2r8v">
-        <dc:Bounds x="2310" y="380" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_08gx954_di" bpmnElement="Activity_193mbhi">
         <dc:Bounds x="1060" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -383,11 +378,11 @@
       <bpmndi:BPMNShape id="Event_07ph4sc_di" bpmnElement="Event_07ph4sc">
         <dc:Bounds x="2812" y="662" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0fhrwum_di" bpmnElement="Event_0fhrwum">
-        <dc:Bounds x="2692" y="712" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0jfs6na_di" bpmnElement="Event_0jfs6na">
         <dc:Bounds x="1632" y="682" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0464dpg_di" bpmnElement="Activity_0sv2r8v">
+        <dc:Bounds x="2310" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0jz6tje_di" bpmnElement="Activity_0jz6tje" isExpanded="true">
         <dc:Bounds x="470" y="180" width="530" height="490" />
